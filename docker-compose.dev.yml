@@ -1,12 +1,15 @@
 version: '3'
 services:
   db:
-    image: postgres:16.0-bullseye
+#    image: pgvector/pgvector:pg16
+    build:
+      context: ./postgres-pgvector
+      dockerfile: Dockerfile
     restart: always
     environment:
-      - POSTGRES_USER=pguser
-      - POSTGRES_PASSWORD=pgpass
-      - POSTGRES_DB=user-db
+      - POSTGRES_USER=somnio-pguser
+      - POSTGRES_PASSWORD=somnio-pgpass
+      - POSTGRES_DB=somnio-pg-db
     container_name: somnio-pg
     volumes:
       - ./pgdata:/var/lib/postgresql/data

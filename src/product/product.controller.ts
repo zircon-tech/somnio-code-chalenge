@@ -10,10 +10,10 @@ export class ProductController {
 
   @Get('similar/:id')
   @ApiOkResponse({ type: ProductRecommendationResponseDto })
-  similarTo(
+  async similarTo(
     @Param('id') productId: string
-  ): ProductRecommendationResponseDto {
-    const productScores = this.productService.similarTo(productId);
+  ): Promise<ProductRecommendationResponseDto> {
+    const productScores = await this.productService.similarTo(productId);
     return {
       recommendations: productScores,
     };

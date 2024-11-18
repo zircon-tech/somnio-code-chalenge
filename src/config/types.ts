@@ -1,19 +1,3 @@
-export enum AwsRegion {
-  NVirginia = 'us-east-1',
-  Ohio = 'us-east-2',
-  NCalifornia = 'us-west-1',
-  Oregon = 'us-west-2',
-}
-
-export enum EnvStages {
-  LOCAL = 'local',
-  DEV = 'dev',
-}
-
-export enum NodeEnvs {
-  LOCAL = 'local',
-  DEV = 'dev',
-}
 
 export enum EnvObjects {
   APP_CONFIG = 'AppConfig',
@@ -22,12 +6,11 @@ export enum EnvObjects {
 
 export interface IEnvironmentVariables {
   // App
-  NODE_ENV: NodeEnvs;
-  STAGE: EnvStages;
+  NODE_ENV: string;
+  STAGE: string;
   SEEDING: string;
   APP_PORT: number;
-  RUN_JOBS: boolean;
-  AWS_DEPLOY_REGION?: AwsRegion;
+  OPEN_IA_APIKEY: string;
 
   // DB
   DB_HOST: string;
@@ -41,13 +24,12 @@ export interface IEnvironmentVariables {
 
 export interface AppConfig {
   port: number;
-  stage: EnvStages;
-  seed: any;
+  stage: string;
+  seed: string;
+  openIaApiKey: string;
   isAwsDeploy: boolean;
   isNotProductionDeploy: boolean;
   isTestDeploy: boolean;
-  awsRegion: AwsRegion;
-  jobsEnabled?: boolean;
 }
 
 export interface DbConfig {
@@ -66,6 +48,6 @@ export interface IntegratedConfig {
 }
 
 export interface StaticConfig {
-  stage: EnvStages;
-  nodeEnv: NodeEnvs;
+  stage: string;
+  nodeEnv: string;
 }

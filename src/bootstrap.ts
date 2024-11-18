@@ -6,7 +6,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 import { writeFileSync } from 'fs';
 import { AppModule } from './app.module';
-import { ExtendedValidationRequestException } from './common/exceptions';
 import {
   AppConfig,
   EnvObjects,
@@ -14,7 +13,12 @@ import {
   StaticConfig,
 } from './config/types';
 
-export function setupSwagger(app, isNotProductionDeploy: boolean) {
+type App = any;
+type HttpResponse = any;
+type HttpRequest = any;
+type MiddlewareCallback = any;
+
+export function setupSwagger(app: App, isNotProductionDeploy: boolean) {
   const config = new DocumentBuilder()
     .setTitle('Repose API')
     .setDescription('API to interact with the Repose backend')
@@ -24,14 +28,14 @@ export function setupSwagger(app, isNotProductionDeploy: boolean) {
   const document = SwaggerModule.createDocument(app, config);
   if (isNotProductionDeploy) {
     writeFileSync(
-      './test/swagger/swagger-spec.json',
+      './swagger/swagger-spec.json',
       JSON.stringify(document, null, 2),
     );
   }
   SwaggerModule.setup('api', app, document);
 }
 
-export function setupCors(app) {
+export function setupCors(app: App) {
   const corsOptions = {
     allowedHeaders: [
       'Origin',
@@ -45,7 +49,7 @@ export function setupCors(app) {
   };
   app.enableCors(corsOptions);
   // added due to open issue in cors lib https://github.com/expressjs/cors/issues/251
-  app.use((_, res, next) => {
+  app.use((_: HttpRequest, res: HttpResponse, next: MiddlewareCallback) => {
     res.setHeader(
       'Access-Control-Allow-Methods',
       corsOptions.methods.join(', '),
@@ -58,14 +62,14 @@ export function setupCors(app) {
   });
 }
 
-export function setupEncoders(app) {
+export function setupEncoders(app: App) {
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
       transform: true,
-      exceptionFactory: (errors) => {
-        throw new ExtendedValidationRequestException(errors);
-      },
+      // exceptionFactory: (errors) => {
+      //   throw new ExtendedValidationRequestException(errors);
+      // },
     }),
   );
   // app.useGlobalInterceptors(new ClassSerializerInterceptor(
@@ -97,7 +101,7 @@ export async function bootstrap(
 ) {
   const { app } = await bootstrapServices(staticParams, environmentVariables);
   const configService = app.get(ConfigService);
-  const appConfig = configService.get<AppConfig>(EnvObjects.APP_CONFIG);
+  const appConfig = configService.get<AppConfig>(EnvObjects.APP_CONFIG)!;
 
   setupCors(app);
   setupSwagger(app, appConfig.isNotProductionDeploy);

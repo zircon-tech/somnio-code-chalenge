@@ -22,7 +22,7 @@ export function mapNativeError2ErrorCode(exception: Error): {
         return {
           appCode: AppErrorCode.UNEXPECTED_ERROR,
           args: {
-            fields: isJsonEncodeAble(metaContent.target)
+            fields: typeof metaContent?.target !== 'undefined' && isJsonEncodeAble(metaContent.target)
               ? metaContent.target
               : {},
           },

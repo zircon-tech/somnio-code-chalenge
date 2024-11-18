@@ -1,9 +1,9 @@
-import { Product, ProductScore } from './types';
+import { IProduct, IProductScore } from './types';
 import { ApiProperty } from '@nestjs/swagger';
 import {IsArray,IsNotEmpty,ValidateNested } from 'class-validator';
 import {Type } from 'class-transformer';
 
-export class ProductInputDto implements Product {
+export class ProductInputDto implements IProduct {
   @ApiProperty({ type: String, required: true, nullable: false })
   @IsNotEmpty()
   id: string;
@@ -28,7 +28,7 @@ export class ProductBulkCreateInputDto {
   products: ProductInputDto[];
 }
 
-export class ProductScoreResponseDto implements ProductScore {
+export class ProductScoreResponseDto implements IProductScore {
   @ApiProperty({ type: String, required: true, nullable: false })
   productId: string;
 

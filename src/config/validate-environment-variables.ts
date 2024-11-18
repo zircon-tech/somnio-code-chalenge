@@ -1,44 +1,31 @@
 import { plainToClass } from 'class-transformer';
 import {
-  IsBoolean,
-  IsDecimal,
   IsEnum,
   IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
-  IsUrl,
   validateSync,
 } from 'class-validator';
-import { ToBoolean, ToEnum, ToInteger } from '../common/transformers';
-import { AwsRegion, EnvStages, IEnvironmentVariables, NodeEnvs } from './types';
+import { ToInteger } from '../common/transformers';
+import { IEnvironmentVariables } from './types';
 
 class EnvironmentVariables implements IEnvironmentVariables {
   // App
   @IsNotEmpty()
-  @IsEnum(NodeEnvs)
-  // @ToEnum(NodeEnvs)
-  NODE_ENV: NodeEnvs;
+  NODE_ENV: string;
   @IsNotEmpty()
-  @IsEnum(EnvStages)
-  // @ToEnum(EnvStages)
-  STAGE: EnvStages;
+  STAGE: string;
   @IsNotEmpty()
   @IsString()
-  SEEDING: EnvStages;
+  SEEDING: string;
+  @IsNotEmpty()
+  @IsString()
+  OPEN_IA_APIKEY: string;
   @IsNotEmpty()
   @IsInt()
   @ToInteger()
   APP_PORT: number;
-  @IsOptional()
-  @IsBoolean()
-  @ToBoolean()
-  RUN_JOBS: boolean;
-  @IsOptional()
-  @IsEnum(AwsRegion)
-  // @ToEnum(AwsRegion)
-  AWS_DEPLOY_REGION?: AwsRegion;
 
   // DB
   @IsNotEmpty()
