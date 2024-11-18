@@ -1,0 +1,6 @@
+*.env
+*.secret.env
+!shared/defaults.env
+!shared/example.env
+!shared/example.secret.env
+!dev.env
