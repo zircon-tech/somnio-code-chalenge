@@ -1,7 +1,7 @@
 import { IProduct, IProductScore } from './types';
 import { ApiProperty } from '@nestjs/swagger';
-import {IsArray,IsNotEmpty,ValidateNested } from 'class-validator';
-import {Type } from 'class-transformer';
+import { IsArray, IsNotEmpty, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class ProductInputDto implements IProduct {
   @ApiProperty({ type: String, required: true, nullable: false })
@@ -21,7 +21,12 @@ export class ProductInputDto implements IProduct {
 }
 
 export class ProductBulkCreateInputDto {
-  @ApiProperty({ type: ProductInputDto, required: true, nullable: false, isArray: true })
+  @ApiProperty({
+    type: ProductInputDto,
+    required: true,
+    nullable: false,
+    isArray: true,
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ProductInputDto)
@@ -37,7 +42,12 @@ export class ProductScoreResponseDto implements IProductScore {
 }
 
 export class ProductRecommendationResponseDto {
-  @ApiProperty({ type: ProductScoreResponseDto, required: true, nullable: false, isArray: true })
+  @ApiProperty({
+    type: ProductScoreResponseDto,
+    required: true,
+    nullable: false,
+    isArray: true,
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ProductScoreResponseDto)

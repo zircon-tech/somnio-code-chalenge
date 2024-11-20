@@ -1,6 +1,6 @@
-import {ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NestFactory,Reflector } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { writeFileSync } from 'fs';
@@ -71,9 +71,7 @@ export function setupEncoders(app: App) {
       // },
     }),
   );
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(
-    app.get(Reflector),
-  ));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.getHttpAdapter().getInstance().set('etag', false);
 }
 

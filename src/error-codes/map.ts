@@ -1,8 +1,4 @@
-import {
-  AppErrorCode,
-  BaseLogicError,
-  RecordNotFound,
-} from './codes';
+import { AppErrorCode, BaseLogicError, RecordNotFound } from './codes';
 import type { ErrorMap } from './types';
 
 const errorMap: ErrorMap = new Map([

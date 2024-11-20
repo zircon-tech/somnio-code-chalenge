@@ -7,9 +7,9 @@ export function isJsonEncodeAble(
   if (
     !(candidate instanceof Array) &&
     !(candidate instanceof Object) &&
-    (candidate !== null) &&
-    (typeof candidate !== 'string') &&
-    (typeof candidate !== 'number')
+    candidate !== null &&
+    typeof candidate !== 'string' &&
+    typeof candidate !== 'number'
   ) {
     return false;
   }

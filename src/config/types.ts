@@ -1,4 +1,3 @@
-
 export enum EnvObjects {
   APP_CONFIG = 'AppConfig',
   DB_CONFIG = 'DbConfig',

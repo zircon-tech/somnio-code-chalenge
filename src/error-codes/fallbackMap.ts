@@ -8,8 +8,8 @@ export function mapNativeError2ErrorCode(exception: Error): {
   args?: JsonEncodeAble;
 } {
   if (exception instanceof Prisma.PrismaClientValidationError) {
-    const msg = exception.message;
-    const argument = msg.substring(msg.indexOf('})\n\n') + 4);
+    // const msg = exception.message;
+    // const argument = msg.substring(msg.indexOf('})\n\n') + 4);
     return {
       appCode: AppErrorCode.UNEXPECTED_ERROR,
       args: {},
@@ -22,9 +22,11 @@ export function mapNativeError2ErrorCode(exception: Error): {
         return {
           appCode: AppErrorCode.UNEXPECTED_ERROR,
           args: {
-            fields: typeof metaContent?.target !== 'undefined' && isJsonEncodeAble(metaContent.target)
-              ? metaContent.target
-              : {},
+            fields:
+              typeof metaContent?.target !== 'undefined' &&
+              isJsonEncodeAble(metaContent.target)
+                ? metaContent.target
+                : {},
           },
         };
       }
