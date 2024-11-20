@@ -16,6 +16,60 @@
           "App"
         ]
       }
+    },
+    "/products/similar/{id}": {
+      "get": {
+        "operationId": "ProductController_similarTo",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductRecommendationResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Product"
+        ]
+      }
+    },
+    "/products": {
+      "post": {
+        "operationId": "ProductController_bulkCreate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductBulkCreateInputDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Product"
+        ]
+      }
     }
   },
   "info": {
@@ -34,6 +88,84 @@
         "type": "http"
       }
     },
-    "schemas": {}
+    "schemas": {
+      "ProductScoreResponseDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "nullable": false
+          },
+          "score": {
+            "type": "number",
+            "nullable": false
+          }
+        },
+        "required": [
+          "productId",
+          "score"
+        ]
+      },
+      "ProductRecommendationResponseDto": {
+        "type": "object",
+        "properties": {
+          "recommendations": {
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductScoreResponseDto"
+            }
+          }
+        },
+        "required": [
+          "recommendations"
+        ]
+      },
+      "ProductInputDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": false
+          },
+          "name": {
+            "type": "string",
+            "nullable": false
+          },
+          "description": {
+            "type": "string",
+            "nullable": false
+          },
+          "tags": {
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "tags"
+        ]
+      },
+      "ProductBulkCreateInputDto": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "nullable": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductInputDto"
+            }
+          }
+        },
+        "required": [
+          "products"
+        ]
+      }
+    }
   }
 }

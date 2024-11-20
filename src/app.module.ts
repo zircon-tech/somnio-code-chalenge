@@ -3,11 +3,10 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { APP_FILTER } from '@nestjs/core';
 import {IEnvironmentVariables, StaticConfig } from './config/types';
 import { extractRuntimeParameters } from './config/parameters';
 import { PrismaModule } from './prisma/prisma.module';
-
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -17,8 +16,8 @@ import { PrismaModule } from './prisma/prisma.module';
     }]),
     // AppLoggerModule,
     // ScheduleModule.forRoot(),
-    // AWSModule,
     PrismaModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [

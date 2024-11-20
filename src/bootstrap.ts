@@ -1,9 +1,8 @@
-import { ValidationPipe } from '@nestjs/common';
+import {ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core';
+import { NestFactory,Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as bodyParser from 'body-parser';
 import { writeFileSync } from 'fs';
 import { AppModule } from './app.module';
 import {
@@ -72,12 +71,9 @@ export function setupEncoders(app: App) {
       // },
     }),
   );
-  // app.useGlobalInterceptors(new ClassSerializerInterceptor(
-  //   app.get(Reflector),
-  // ));
-  app.use(
-    bodyParser.json
-  );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(
+    app.get(Reflector),
+  ));
   app.getHttpAdapter().getInstance().set('etag', false);
 }
 
@@ -88,7 +84,6 @@ export async function bootstrapServices(
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule.register(staticParams, environmentVariables),
     {
-      bodyParser: false,
       // logger: ['error', 'warn', 'log', 'debug', 'verbose'],
     },
   );
