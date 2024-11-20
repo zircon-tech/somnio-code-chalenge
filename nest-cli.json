@@ -3,6 +3,22 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "introspectComments": true
+        }
+      }
+    ],
+    "manualRestart": true,
+    "assets": [
+      {
+        "include": "./envfiles/**/*.env",
+        "outDir": "dist/envfiles",
+        "watchAssets": true
+      }
+    ]
   }
 }

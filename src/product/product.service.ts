@@ -5,6 +5,7 @@ import { IProduct, IProductScore } from './types';
 import { AppConfig, EnvObjects } from '../config/types';
 import { PrismaService } from '../prisma/prisma.service';
 import OpenAI from 'openai';
+import { OpenapiService } from '../openapi/openapi.service';
 
 function jaccardIndex(s1: Set<string>, s2: Set<string>) {
   return (s1 as any).intersection(s2).size / (s1 as any).union(s2).size;
@@ -19,8 +20,8 @@ const DESCRIPTION_WEIGH = 1 - TAGS_WEIGH;
 @Injectable()
 export class ProductService {
   constructor(
-    private readonly configService: ConfigService,
     private readonly prismaService: PrismaService,
+    private readonly openapiService: OpenapiService,
   ) {}
 
   async similarTo(productId: string): Promise<IProductScore[]> {
@@ -78,25 +79,14 @@ WHERE
         score: TAGS_WEIGH * tagScore + DESCRIPTION_WEIGH * score,
         productId,
       }),
-    );
+    ).sort(({score: score1}, {score: score2}) => score2 - score1);
   }
 
   async bulkCreate(items: IProduct[]) {
-    const { openIaApiKey } = this.configService.get<AppConfig>(
-      EnvObjects.APP_CONFIG,
-    )!;
-    const openAIClient = new OpenAI({
-      apiKey: openIaApiKey,
-    });
     const wEmbeddingsItems = await Promise.all(
       items.map(async (item) => {
         try {
-          const wordEmbeddingResponse = await openAIClient.embeddings.create({
-            model: 'text-embedding-3-small',
-            input: item.description,
-          });
-          // ToDo: Why returns an array of data?
-          const wordEmbedding = wordEmbeddingResponse.data[0].embedding;
+          const wordEmbedding = await this.openapiService.wordEmbedding(item.description);
           return {
             ...item,
             wordEmbedding,

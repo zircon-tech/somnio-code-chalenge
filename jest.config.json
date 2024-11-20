@@ -1,0 +1,23 @@
+{
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": ".",
+  "testRegex": ".*\\.e2e-spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "collectCoverageFrom": [
+    "**/*.(t|j)s"
+  ],
+  "coveragePathIgnorePatterns": [
+    ".*\\.spec\\.ts$",
+    ".*\\.e2e-spec\\.ts$"
+  ],
+  "coverageDirectory": "./code-coverage",
+  "coverageProvider": "babel",
+  "coverageReporters": ["json-summary", "lcov"],
+  "testEnvironment": "node"
+}

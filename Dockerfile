@@ -1,37 +1,30 @@
-FROM public.ecr.aws/docker/library/node:20.11.1-alpine3.19 AS build
+FROM public.ecr.aws/docker/library/node:22.5.1-alpine3.19 AS build
 WORKDIR /app
 COPY package.json /app/
 # ToDo: Need to use the same lockfile as the devs, and to avoid including frontend pkgs
 COPY package-lock.json /app/
-#COPY api/package.json /app/api/
-#COPY api/prisma /app/api/prisma
-#COPY api/tsconfig.build.json /app/api/tsconfig.build.json
-#COPY api/tsconfig.json /app/api/tsconfig.json
-COPY api/ /app/api/
-COPY contract /app/contract/
-COPY sui-sdk /app/sui-sdk/
-RUN npm -w api install
-RUN npm run build:api
+#COPY ./package.json /app/
+#COPY ./prisma /app/prisma
+#COPY ./tsconfig.build.json /app/tsconfig.build.json
+#COPY ./tsconfig.json /app/tsconfig.json
+COPY ./ /app/
+RUN npm install
+RUN npm run build
 
 FROM build AS migrator
 WORKDIR /app
-ENV NODE_OPTIONS="--require=./api/dist/envfiles/load_envs.js"
-RUN npm run -w api prisma:deploy
+ENV NODE_OPTIONS="--require=./dist/envfiles/load_envs.js"
+RUN npm run prisma:deploy
 
 FROM public.ecr.aws/docker/library/node:20.11.1-alpine3.19 AS production
 WORKDIR /app
-#COPY api/package.json ./package-lock.json ./tsconfig.json ./tsconfig.build.json /app/
-#COPY --from=build /app/api/package.json api/package.json
-#COPY --from=build /app/api/node_modules api/node_modules
+#COPY ./package.json ./package-lock.json ./tsconfig.json ./tsconfig.build.json /app/
+#COPY --from=build /app/package.json ./package.json
+#COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/node_modules node_modules
-#COPY --from=build /app/api/node_modules api/node_modules
-COPY --from=build /app/api/dist api/dist
-COPY --from=build /app/contract/package.json contract/package.json
-COPY --from=build /app/contract/dist contract/dist
-#COPY --from=build /app/sui-sdk/node_modules sui-sdk/node_modules
-COPY --from=build /app/sui-sdk/package.json sui-sdk/package.json
-COPY --from=build /app/sui-sdk/dist sui-sdk/dist
+#COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
 EXPOSE 8000
 #CMD ["sleep", "infinity"]
-ENV NODE_OPTIONS="--require=./api/dist/envfiles/load_envs.js"
-CMD ["node", "api/dist/src/index.js"]
+ENV NODE_OPTIONS="--require=./dist/envfiles/load_envs.js"
+CMD ["node", "./dist/src/index.js"]

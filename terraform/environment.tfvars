@@ -1,7 +1,7 @@
-application_name = "somnio-codechalenge"
+application_name = "somnio"
 environment="dev"
 app_tags = {
-    "Application" = "somnio-codechalenge"
+    "Application" = "somnio"
     "Environment" = "dev"
 }
 postgres_instance_class = "db.t3.micro"
@@ -11,4 +11,4 @@ app_base_url=""
 sentry_dsn= ""
 stage = "dev"
 ecr_image_tag = "dev"
-db_name="somnio"
+db_name="somniodb"

@@ -15,7 +15,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js', 'pgdata', 'dist'],
+  ignorePatterns: ['.eslintrc.js', 'pgdata', 'pgdata-test', 'dist'],
   rules: {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',

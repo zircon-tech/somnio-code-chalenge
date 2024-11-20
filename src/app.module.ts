@@ -7,6 +7,7 @@ import { IEnvironmentVariables, StaticConfig } from './config/types';
 import { extractRuntimeParameters } from './config/parameters';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProductModule } from './product/product.module';
+import { OpenapiModule } from './openapi/openapi.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ProductModule } from './product/product.module';
     // AppLoggerModule,
     PrismaModule,
     ProductModule,
+    OpenapiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

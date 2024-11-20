@@ -7,12 +7,12 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      - POSTGRES_USER=somnio-pguser
-      - POSTGRES_PASSWORD=somnio-pgpass
-      - POSTGRES_DB=somnio-pg-db
-    container_name: somnio-pg
+      - POSTGRES_USER=test-pguser
+      - POSTGRES_PASSWORD=test-pgpass
+      - POSTGRES_DB=test-pgdb
+    container_name: test-pg
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - ./pgdata-test:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
@@ -20,16 +20,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  api:
-#    image: pgvector/pgvector:pg16
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    environment:
-      - APP_PORT=3000
-    container_name: somnio-api
-    ports:
-      - "3000:3000"
 volumes:
   db:
     driver: local

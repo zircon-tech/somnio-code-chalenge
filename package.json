@@ -13,15 +13,17 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "db-up": "CURRENT_USER=$(id -u):$(id -g) docker-compose --file ./docker-compose.dev.yml up",
+    "test:db-up": "CURRENT_USER=$(id -u):$(id -g) docker-compose --file ./docker-compose.test.yml up",
+    "test:integration": "./scripts/run-integration.sh false",
     "prisma:gen": "npx prisma generate",
     "prisma:migrate": "NODE_OPTIONS=\"--require=./envfiles/load_envs.js\" prisma migrate dev --preview-feature --schema=./prisma/schema.prisma --skip-seed",
     "prisma:deploy": "NODE_OPTIONS=\"--require=./envfiles/load_envs.js\" prisma migrate deploy --schema=./prisma/schema.prisma",
     "prisma:seed": "NODE_OPTIONS=\"--require=./envfiles/load_envs.js\" prisma db seed --schema=./prisma/schema.prisma"
+  },
+  "engines": {
+    "node": ">=22.5.1 <23",
+    "npm": ">=10.8.2 <11"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -60,22 +62,5 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
   }
 }
