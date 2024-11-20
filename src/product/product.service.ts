@@ -1,15 +1,10 @@
 import { Prisma } from '@prisma/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { IProduct, IProductScore } from './types';
-import { AppConfig, EnvObjects } from '../config/types';
 import { PrismaService } from '../prisma/prisma.service';
 import OpenAI from 'openai';
 import { OpenapiService } from '../openapi/openapi.service';
 
-function jaccardIndex(s1: Set<string>, s2: Set<string>) {
-  return (s1 as any).intersection(s2).size / (s1 as any).union(s2).size;
-}
 function formatVector(vect: number[]) {
   return `[${vect.map((nn) => nn.toString(10)).join(',')}]`;
 }
@@ -34,8 +29,8 @@ export class ProductService {
       throw new BadRequestException(productId, 'Product not found');
     }
     const scores = await this.prismaService.client.$queryRaw<
-          (IProductScore & {tagScore: number})[]
-        >`
+      (IProductScore & { tagScore: number })[]
+    >`
 SELECT
     array_length(allTags.items, 1) AS "unionSize",
     interTags.sizee AS "interSize",
@@ -74,19 +69,21 @@ FROM
 WHERE
     pp2."id" != pp1."id" AND pp1."id" = ${productId};            
         `;
-    return scores.map(
-      ({score, tagScore, productId}) => ({
+    return scores
+      .map(({ score, tagScore, productId }) => ({
         score: TAGS_WEIGH * tagScore + DESCRIPTION_WEIGH * score,
         productId,
-      }),
-    ).sort(({score: score1}, {score: score2}) => score2 - score1);
+      }))
+      .sort(({ score: score1 }, { score: score2 }) => score2 - score1);
   }
 
   async bulkCreate(items: IProduct[]) {
     const wEmbeddingsItems = await Promise.all(
       items.map(async (item) => {
         try {
-          const wordEmbedding = await this.openapiService.wordEmbedding(item.description);
+          const wordEmbedding = await this.openapiService.wordEmbedding(
+            item.description,
+          );
           return {
             ...item,
             wordEmbedding,
@@ -113,28 +110,31 @@ WHERE
     // );
     // this.prismaService.client.$executeRaw`INSERT INTO items (id, name, description, tags, wordEmbedding) VALUES ${sqlValues};`;
     await this.prismaService.client.$transaction(
-      ([] as Prisma.PrismaPromise<Prisma.BatchPayload | number>[]).concat(...wEmbeddingsItems.map(
-        // (wEmbeddingsItem) => this.prismaService.client.$executeRaw
-        //   `INSERT INTO "Product" ("id", "name", "description", "tags", "wordEmbedding") VALUES (${wEmbeddingsItem.id},${wEmbeddingsItem.name},${wEmbeddingsItem.description},${wEmbeddingsItem.tags},${formatVector(wEmbeddingsItem.wordEmbedding)});`
-        // ,
-        (wEmbeddingsItem) => [
-          this.prismaService.client.$executeRawUnsafe(
-            `INSERT INTO "Product" ("id", "name", "description", "tags", "wordEmbedding") VALUES ($1,$2,$3,$4,'${formatVector(wEmbeddingsItem.wordEmbedding)}'::vector);`,
-            ...[
-              wEmbeddingsItem.id,
-              wEmbeddingsItem.name,
-              wEmbeddingsItem.description,
-              wEmbeddingsItem.tags,
-            ],
-          ),
-          // ToDo: Store cache of relations between all of them? Symmetric relation
-          this.prismaService.client.tagOfProduct.createMany({
-            data: wEmbeddingsItem.tags.map(
-              (tag) => ({tagValue: tag, productId: wEmbeddingsItem.id}),
+      ([] as Prisma.PrismaPromise<Prisma.BatchPayload | number>[]).concat(
+        ...wEmbeddingsItems.map(
+          // (wEmbeddingsItem) => this.prismaService.client.$executeRaw
+          //   `INSERT INTO "Product" ("id", "name", "description", "tags", "wordEmbedding") VALUES (${wEmbeddingsItem.id},${wEmbeddingsItem.name},${wEmbeddingsItem.description},${wEmbeddingsItem.tags},${formatVector(wEmbeddingsItem.wordEmbedding)});`
+          // ,
+          (wEmbeddingsItem) => [
+            this.prismaService.client.$executeRawUnsafe(
+              `INSERT INTO "Product" ("id", "name", "description", "tags", "wordEmbedding") VALUES ($1,$2,$3,$4,'${formatVector(wEmbeddingsItem.wordEmbedding)}'::vector);`,
+              ...[
+                wEmbeddingsItem.id,
+                wEmbeddingsItem.name,
+                wEmbeddingsItem.description,
+                wEmbeddingsItem.tags,
+              ],
             ),
-          }),
-        ],
-      )),
+            // ToDo: Store cache of relations between all of them? Symmetric relation
+            this.prismaService.client.tagOfProduct.createMany({
+              data: wEmbeddingsItem.tags.map((tag) => ({
+                tagValue: tag,
+                productId: wEmbeddingsItem.id,
+              })),
+            }),
+          ],
+        ),
+      ),
     );
   }
 }

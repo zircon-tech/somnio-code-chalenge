@@ -1,8 +1,4 @@
-import {
-  Global,
-  INestApplication,
-  Module,
-} from '@nestjs/common';
+import { Global, INestApplication, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../../src/app.module';
 import { setupCors, setupEncoders } from '../../src/bootstrap';

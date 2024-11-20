@@ -10,10 +10,7 @@ const prismaOptions = {
 };
 const prisma = new PrismaClient(prismaOptions);
 
-const tables = [
-  'Product',
-  'TagOfProduct',
-];
+const tables = ['Product', 'TagOfProduct'];
 
 export default async function resetDb() {
   await prisma.$connect();
@@ -31,19 +28,19 @@ export default async function resetDb() {
           return;
         }
         const tableUpperName = `${table
-             ?.at(0)
-             ?.toUpperCase()}${table.slice(1)}`;
+          ?.at(0)
+          ?.toUpperCase()}${table.slice(1)}`;
         if (!tableUpperName) {
           return;
         }
         return Promise.all([
-           prisma.$executeRawUnsafe(
-             `ALTER SEQUENCE IF EXISTS "${tableUpperName}_id_seq" RESTART WITH 1;`,
-           ),
-           prisma.$executeRawUnsafe(
-             `ALTER SEQUENCE IF EXISTS "${table}_id_seq" RESTART WITH 1;`,
-           ),
-         ]);
+          prisma.$executeRawUnsafe(
+            `ALTER SEQUENCE IF EXISTS "${tableUpperName}_id_seq" RESTART WITH 1;`,
+          ),
+          prisma.$executeRawUnsafe(
+            `ALTER SEQUENCE IF EXISTS "${table}_id_seq" RESTART WITH 1;`,
+          ),
+        ]);
       }),
     );
   } finally {

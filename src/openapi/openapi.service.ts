@@ -5,9 +5,7 @@ import OpenAI from 'openai';
 
 @Injectable()
 export class OpenapiService implements OnModuleInit {
-  constructor(
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly configService: ConfigService) {}
 
   async wordEmbedding(word: string) {
     const { openIaApiKey } = this.configService.get<AppConfig>(
@@ -31,6 +29,5 @@ export class OpenapiService implements OnModuleInit {
     }
   }
 
-  onModuleInit(): any{
-  }
+  onModuleInit(): any {}
 }

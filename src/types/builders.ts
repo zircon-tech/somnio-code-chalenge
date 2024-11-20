@@ -1,4 +1,3 @@
-
 export type JsonEncodeAble =
   | { [key: string]: JsonEncodeAble }
   | JsonEncodeAble[]

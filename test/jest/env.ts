@@ -1,6 +1,4 @@
-import {
-  IEnvironmentVariables,
-} from '../../src/config/types';
+import { IEnvironmentVariables } from '../../src/config/types';
 
 function defined(val: string | undefined): string {
   if (val === undefined) {
