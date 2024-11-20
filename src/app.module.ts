@@ -17,7 +17,6 @@ import { ProductModule } from './product/product.module';
       },
     ]),
     // AppLoggerModule,
-    // ScheduleModule.forRoot(),
     PrismaModule,
     ProductModule,
   ],

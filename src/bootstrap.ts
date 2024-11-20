@@ -34,7 +34,7 @@ export function setupSwagger(app: App, isNotProductionDeploy: boolean) {
   SwaggerModule.setup('api', app, document);
 }
 
-export function setupCors(app: App) {
+export function setupCors(app: App, isNotProductionDeploy: boolean) {
   const corsOptions = {
     allowedHeaders: [
       'Origin',
@@ -43,7 +43,7 @@ export function setupCors(app: App) {
       'Accept',
       'Authorization',
     ],
-    origin: '*', // ToDo: Put frontend (and SSR server) URL when production...
+    origin: isNotProductionDeploy ? '*' : '', // ToDo: Put frontend (and SSR server) URL when production...
     methods: ['GET, POST, OPTIONS, PUT, PATCH, DELETE'],
   };
   app.enableCors(corsOptions);
@@ -66,9 +66,6 @@ export function setupEncoders(app: App) {
     new ValidationPipe({
       forbidNonWhitelisted: true,
       transform: true,
-      // exceptionFactory: (errors) => {
-      //   throw new ExtendedValidationRequestException(errors);
-      // },
     }),
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
@@ -96,7 +93,7 @@ export async function bootstrap(
   const configService = app.get(ConfigService);
   const appConfig = configService.get<AppConfig>(EnvObjects.APP_CONFIG)!;
 
-  setupCors(app);
+  setupCors(app, appConfig.isNotProductionDeploy);
   setupSwagger(app, appConfig.isNotProductionDeploy);
   setupEncoders(app);
 
