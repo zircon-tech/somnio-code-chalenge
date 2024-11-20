@@ -33,12 +33,50 @@ export class ProductService {
       throw new BadRequestException(productId, 'Product not found');
     }
     const scores = await this.prismaService.client.$queryRaw<
-          (IProductScore & {tags: string[]})[]
-        >`SELECT pp2."tags", pp2."id" AS "productId", 1 - (pp1."wordEmbedding" <=> pp2."wordEmbedding") AS "score" FROM "Product" AS pp1, "Product" AS pp2 WHERE pp2."id" != pp1."id" AND pp1."id" = ${productId};`;
+          (IProductScore & {tagScore: number})[]
+        >`
+SELECT
+    array_length(allTags.items, 1) AS "unionSize",
+    interTags.sizee AS "interSize",
+    CASE array_length(allTags.items, 1) WHEN 0 THEN 0 ELSE (interTags.sizee::float / array_length(allTags.items, 1)::float) END AS "tagScore",
+    pp2."id" AS "productId",
+    1 - ((pp1."wordEmbedding" <=> pp2."wordEmbedding") / 2) AS "score"
+FROM
+    "Product" AS pp1,
+    "Product" AS pp2,
+    LATERAL (
+        SELECT
+            array_agg(tt.tag) as items
+        FROM
+            (
+                SELECT DISTINCT
+                    tp2."tagValue" AS tag
+                FROM
+                    "TagOfProduct" AS tp1, "TagOfProduct" AS tp2
+                WHERE
+                    tp1."tagValue" = tp2."tagValue" AND (tp2."productId" = pp2."id" OR tp1."productId" = pp1."id")
+            ) AS tt
+    ) AS allTags,
+    LATERAL (
+        SELECT
+            icount(array_agg(tt.tag)) as sizee
+        FROM
+            (
+                SELECT DISTINCT
+                    array_position(allTags.items, tp2."tagValue") AS tag
+                FROM
+                    "TagOfProduct" AS tp1, "TagOfProduct" AS tp2
+                WHERE
+                    tp1."tagValue" = tp2."tagValue" AND (tp2."productId" = pp2."id" AND tp1."productId" = pp1."id")
+            ) AS tt
+    ) AS interTags
+WHERE
+    pp2."id" != pp1."id" AND pp1."id" = ${productId};            
+        `;
     return scores.map(
-      ({score, tags, ...other}) => ({
-        score: TAGS_WEIGH * jaccardIndex(new Set(product.tags), new Set(tags)) + DESCRIPTION_WEIGH * score,
-        ...other,
+      ({score, tagScore, productId}) => ({
+        score: TAGS_WEIGH * tagScore + DESCRIPTION_WEIGH * score,
+        productId,
       }),
     );
   }

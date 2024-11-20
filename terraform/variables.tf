@@ -64,11 +64,6 @@ variable "db_multi_az" {
     type = bool
 }
 
-variable database_url {
-    description = "The URL of the database"
-    type = string
-}
-
 variable "db_name" {
     description = "The name of the database"
     type = string

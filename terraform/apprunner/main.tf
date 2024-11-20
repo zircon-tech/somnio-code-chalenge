@@ -131,7 +131,6 @@ resource "aws_apprunner_service" "service" {
 
         runtime_environment_variables = {
           "AWS_REGION" : "${var.aws_region}",
-          "DATABASE_URL" : "${var.database_url}",
           "DB_NAME": "${var.db_name}",
           "DB_PASS": "${var.db_pass}",
           "NODE_ENV": "${var.node_env}"

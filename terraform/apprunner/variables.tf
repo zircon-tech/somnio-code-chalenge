@@ -61,11 +61,6 @@ variable app_tags {
   type = map(string)
 }
 
-variable database_url {
-  description = "Database URL"
-  type = string
-}
-
 variable "db_name" {
   description = "The name of the database"
   type = string
@@ -76,53 +71,9 @@ variable "db_pass" {
     type = string
 }
 
-variable "magic_secret_key" {
-    description = "The secret key for the application"
-    type = string
-}
 
 variable node_env {
     description = "The environment of the node process"
-    type = string
-}
-
-variable admin_api_key {
-    description = "The admin api key"
-    type = string
-}
-
-variable twitter_api_consumer_key {
-    description = "The twitter api consumer key"
-    type = string
-}
-
-variable twitter_api_consumer_secret {
-    description = "The twitter api consumer secret"
-    type = string
-}
-
-variable app_base_url {
-    description = "The base url of the application"
-    type = string
-}
-
-variable redis_host {
-    description = "The host of the redis server"
-    type = string
-}
-
-variable sentry_dsn {
-    description = "The sentry dsn"
-    type = string
-}
-
-variable instagram_client_id {
-    description = "The instagram client id"
-    type = string
-}
-
-variable instagram_client_secret {
-    description = "The instagram client secret"
     type = string
 }
 
@@ -140,95 +91,4 @@ variable "identifier" {
     description = "The identifier of the image"
     type = string
     default = ""
-}
-
-variable segment_write_key {
-    description = "The segment write key"
-    type = string
-}
-
-variable "stripe_webhook_secret" {
-    description = "The stripe webhook secret"
-    type = string
-}
-
-variable "sendbird_application_id" {
-    description = "The sendbird application id"
-    type = string
-}
-
-variable "sendbird_master_api_token" {
-    description = "The sendbird master api token"
-    type = string
-}
-
-variable "sui_enabled" {
-    description = "Whether or not SUI-related features are enabled"
-    type = bool
-    default = false
-}
-
-variable "sui_network" {
-  description = "Network to use for SUI-related features"
-  type = string
-  
-  # validation {
-  #   condition     = var.sui_enabled == false || (var.sui_enabled == true && contains(["testnet", "devnet", "mainnet"], var.sui_network))
-  #   error_message = "Valid values for var: sui_network are (testnet, devnet, mainnet)."
-  # }
-  
-  # validation {
-  #   condition     = var.sui_enabled == false || (var.sui_enabled == true && length(var.sui_network) > 0)
-  #   error_message = "sui_network must be provided when sui_enabled is true."
-  # }
-}
-
-variable "sui_package_id" {
-  description = "Package ID to use for SUI-related features"
-  type = string
-
-  # validation {
-  #   condition = var.sui_enabled == false || (var.sui_enabled == true && length(var.sui_package_id) > 0)
-  #   error_message = "sui_package_id must be provided when sui_enabled is true."
-  # }
-}
-
-variable "sui_publisher" {
-  description = "Publisher to use for SUI-related features"
-  type = string
-
-  # validation {
-  #   condition = var.sui_enabled == false || (var.sui_enabled == true && length(var.sui_publisher) > 0)
-  #   error_message = "sui_publisher must be provided when sui_enabled is true."
-  # }
-}
-
-variable "aws_kms_key_id_sui" {
-  description = "KMS Key ID to use for the SUI master wallet"
-  type = string
-
-  # validation {
-  #   condition = var.sui_enabled == false || (var.sui_enabled == true && length(var.aws_kms_key_id) > 0)
-  #   error_message = "aws_kms_key_id must be provided when sui_enabled is true."
-  # }
-}
-
-variable "stripe_secret_key" {
-    description = "The stripe secret key"
-    type = string
-}
-
-variable "stripe_webhook_connect_secret" {
-    description = "The stripe webhook connect secret"
-    type = string
-}
-
-variable "aws_ses_secret_key" {
-    description = "The AWS SES secret key"
-    type = string
-}
-
-variable "s3_upload_secret" {
-    description = "The S3 upload secret"
-    type = string
 }

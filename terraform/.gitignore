@@ -1,0 +1,4 @@
+secrets.tfvars
+*.plan
+*.lock.hcl
+.terraform
