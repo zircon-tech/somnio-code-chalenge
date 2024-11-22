@@ -14,7 +14,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "db-up": "CURRENT_USER=$(id -u):$(id -g) docker-compose --file ./docker-compose.dev.yml up",
+    "db-up": "STAGE=local CURRENT_USER=$(id -u):$(id -g) docker-compose --env-file \"./envfiles/${STAGE}.env\" --file ./docker-compose.dev.yml up",
     "test:db-up": "CURRENT_USER=$(id -u):$(id -g) docker-compose --file ./docker-compose.test.yml up",
     "test:integration": "./scripts/run-integration.sh false",
     "prisma:gen": "npx prisma generate",

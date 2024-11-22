@@ -1,4 +1,3 @@
-version: '3'
 services:
   db:
 #    image: pgvector/pgvector:pg16
@@ -7,10 +6,12 @@ services:
       dockerfile: Dockerfile
     restart: always
     environment:
-      - POSTGRES_USER=somnio-pguser
-      - POSTGRES_PASSWORD=somnio-pgpass
-      - POSTGRES_DB=somnio-pg-db
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME}
     container_name: somnio-pg
+    networks:
+      - somnio-net
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     ports:
@@ -25,11 +26,27 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+      target: production
+    networks:
+      - somnio-net
     environment:
       - APP_PORT=3000
+      - NODE_ENV=${NODE_ENV}
+      - STAGE=${STAGE}
+      - SEEDING=${SEEDING}
+      - OPEN_IA_APIKEY=${OPEN_IA_APIKEY}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME}
+      - DB_SCHEMA=${DB_SCHEMA}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
     container_name: somnio-api
     ports:
       - "3000:3000"
 volumes:
   db:
     driver: local
+networks:
+  somnio-net:
+    name: somnio-net
